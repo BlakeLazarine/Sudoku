@@ -1,4 +1,3 @@
-
 from __future__ import print_function
 from termcolor import colored
 
@@ -6,11 +5,12 @@ import random
 
 END_MULTI_SOL = -1
 END_NO_SOL = -2
-#doesnt work because of a logical flaw: needs to know when one value exists
-#within a certain third of the group
+
+
+# doesnt work because of a logical flaw: needs to know when one value exists
+# within a certain third of the group
 
 class Tile:
-
 
     def __init__(self, grid, x, y, value):
         self.grid = grid
@@ -18,7 +18,7 @@ class Tile:
         self.y = y
         self.value = value
         self.editable = value == 0
-        self.possibilities = [i for i in range(1,10)]
+        self.possibilities = [i for i in range(1, 10)]
 
     def update_possibilities(self):
         if self.value != 0:
@@ -27,7 +27,6 @@ class Tile:
 
         affectors = self.get_affectors()
         new_possibilties = []
-
 
         for i in self.possibilities:
             new_possibilties.append(i)
@@ -38,7 +37,7 @@ class Tile:
 
         self.possibilities = new_possibilties
 
-        #print(str(self.x) + "," + str(self.y) + " has possibilities " + str(self.possibilities))
+        # print(str(self.x) + "," + str(self.y) + " has possibilities " + str(self.possibilities))
 
     def eliminate_possibilities(self, possibilities):
         r = False
@@ -52,7 +51,7 @@ class Tile:
         affectors = []
         affectors.extend(self.grid.get_rows()[self.y])
         affectors.extend(self.grid.get_cols()[self.x])
-        affectors.extend(self.grid.get_squares()[self.x//3 + (self.y//3)*3])
+        affectors.extend(self.grid.get_squares()[self.x // 3 + (self.y // 3) * 3])
         return affectors
 
     def __str__(self):
@@ -65,8 +64,8 @@ class Tile:
     def __repr__(self):
         return "%i:%i=%i" % (self.x, self.y, self.value)
 
-class Grid:
 
+class Grid:
 
     def __init__(self, fill=-1, grid=None, generate=False):
         self.grid = []
@@ -77,7 +76,8 @@ class Grid:
                 self.grid.append([])
                 for y in range(9):
                     if fill == -1:
-                        self.grid[x].append(Tile(self, x, y, int(input("Value of " + str(x+1) + ", " + str(y+1) + ": "))))
+                        self.grid[x].append(
+                            Tile(self, x, y, int(input("Value of " + str(x + 1) + ", " + str(y + 1) + ": "))))
                     else:
                         self.grid[x].append(Tile(self, x, y, fill))
         else:
@@ -92,15 +92,15 @@ class Grid:
         s = ""
         for y in range(9):
             if y % 3 == 0 and y != 0:
-                s += "-"*22 + "\n"
+                s += "-" * 22 + "\n"
             for x in range(9):
                 if x % 3 == 0 and x != 0:
                     s += "| "
-                #if y % 3 == 0 and y != 0:
+                # if y % 3 == 0 and y != 0:
                 #    s += "#"*11
                 s += str(self.grid[x][y]) + " "
             s += "\n"
-        s += "\n" + "#"*22 + "\n"
+        s += "\n" + "#" * 22 + "\n"
         return s
 
     def generate(self):
@@ -124,8 +124,6 @@ class Grid:
                 print("Whoops")
                 return
 
-
-
     def is_solvable(self):
         grid_v = []
         for x in range(9):
@@ -143,7 +141,7 @@ class Grid:
                 for y in range(9):
                     if new_grid.grid[x][y].value == 0 and len(new_grid.grid[x][y].possibilities) == 0:
                         print(new_grid)
-                        print(x,y)
+                        print(x, y)
                         return END_NO_SOL
 
             # randomly pick one and set to a random possibility
@@ -153,7 +151,7 @@ class Grid:
                     if new_grid.grid[x][y].value == 0:
                         empty_tiles.append(new_grid.grid[x][y])
 
-            #self.update_possibilities()
+            # self.update_possibilities()
             to_change = empty_tiles[random.randrange(len(empty_tiles))]
             print(to_change.x, to_change.y, to_change.possibilities)
             to_change.value = to_change.possibilities[random.randrange(len(to_change.possibilities))]
@@ -162,7 +160,6 @@ class Grid:
             self.update_possibilities()
             return END_MULTI_SOL
 
-
     def get_squares(self):
         squares = []
         for sy in range(3):
@@ -170,7 +167,7 @@ class Grid:
                 square = []
                 for y in range(3):
                     for x in range(3):
-                        square.append(self.grid[sx*3 + x][sy*3 + y])
+                        square.append(self.grid[sx * 3 + x][sy * 3 + y])
                 squares.append(square)
         return squares
 
@@ -180,18 +177,18 @@ class Grid:
     def get_rows(self):
         rows = []
         for _ in range(9):
-            rows.append([0]*9)
+            rows.append([0] * 9)
         for x in range(9):
             for y in range(9):
-                #print self.grid[x][y]
+                # print self.grid[x][y]
                 rows[y][x] = self.grid[x][y]
-                #print rows[y][x]
-        #print rows
+                # print rows[y][x]
+        # print rows
         return rows
 
     def is_valid(self):
         for group in self.get_groups():
-            for i in range(1,10):
+            for i in range(1, 10):
                 c = 0
                 for tile in group:
                     if tile.value == i:
@@ -225,7 +222,7 @@ class Grid:
             rows.append([squares[i][0].value, squares[i][1].value, squares[i][2].value])
             rows.append([squares[i][3].value, squares[i][4].value, squares[i][5].value])
             rows.append([squares[i][6].value, squares[i][7].value, squares[i][8].value])
-            
+
             print(rows)
 
     def simplify_internal_possibilities(self):
@@ -241,7 +238,7 @@ class Grid:
             # eliminate based on subgroup of 2
             if True:
                 for num1 in range(1, 9):
-                    for num2 in range(num1+1, 10):
+                    for num2 in range(num1 + 1, 10):
                         tiles_with_nums = []
                         stop = False
                         for tile in group:
@@ -257,7 +254,7 @@ class Grid:
                         if len(tiles_with_nums) == 2:
                             for tile in tiles_with_nums:
 
-                                #print(num1, num2, 'at', tile.x, tile.y)
+                                # print(num1, num2, 'at', tile.x, tile.y)
                                 if len(tile.possibilities) > 2:
                                     any_changed = True
                                     to_remove = []
@@ -269,7 +266,7 @@ class Grid:
         # eliminate based on subgroup of 3
         for num1 in range(1, 8):
             for num2 in range(num1 + 1, 9):
-                for num3 in range(num2 +1, 10):
+                for num3 in range(num2 + 1, 10):
                     tiles_with_nums = []
                     stop = False
                     for tile in group:
@@ -285,7 +282,7 @@ class Grid:
                     if len(tiles_with_nums) == 3:
                         for tile in tiles_with_nums:
 
-                            #print(num1, num2, 'at', tile.x, tile.y)
+                            # print(num1, num2, 'at', tile.x, tile.y)
                             if len(tile.possibilities) > 3:
                                 any_changed = True
                                 to_remove = []
@@ -294,7 +291,6 @@ class Grid:
                                         to_remove.append(i)
                                 tile.eliminate_possibilities(to_remove)
         return any_changed
-
 
     def simplify_external_possibilities(self):
         any_changed = False
@@ -305,9 +301,9 @@ class Grid:
                 if t.value == 0:
                     group.append(t)
 
-            #eliminate based on subgroup of 2
+            # eliminate based on subgroup of 2
             for tile_index_1 in range(len(group) - 1):
-                for tile_index_2 in range(tile_index_1+1, len(group) - 0):
+                for tile_index_2 in range(tile_index_1 + 1, len(group) - 0):
                     tile1 = group[tile_index_1]
                     tile2 = group[tile_index_2]
                     if len(tile1.possibilities) != 2 or tile1.possibilities != tile2.possibilities:
@@ -354,9 +350,9 @@ class Grid:
                             self.grid[x][y].value = v
                             run_changed = True
                             any_change = True
-                            #print(self)
+                            # print(self)
                             self.update_possibilities()
-                            #print ('Simple Solve Change: Set (%i,%i) to %i' % (x,y,v))
+                            # print ('Simple Solve Change: Set (%i,%i) to %i' % (x,y,v))
         return any_change
 
     def update_possibilities(self):
@@ -381,9 +377,9 @@ class Grid:
                         tile.value = i
                         any_change = True
                         run_changed = True
-                        #print(self)
+                        # print(self)
                         self.update_possibilities()
-                        #print ('Tile Solve Change: Set (%i,%i) to %i' % (tile.x,tile.y,i))
+                        # print ('Tile Solve Change: Set (%i,%i) to %i' % (tile.x,tile.y,i))
         return any_change
 
     def full_solve(self):
@@ -403,73 +399,74 @@ class Grid:
 
     def manual_solve(self):
         while not self.is_solved():
-            print (self)
+            print(self)
             s = input("What to set?\n> x,y,v\n> ")
-            x,y,v = s
+            x, y, v = s
             original = self.grid[x][y].value
             self.grid[x][y].value = v
             if not self.is_valid():
-                print (colored("Invalid", "yellow", "on_red"))
+                print(colored("Invalid", "yellow", "on_red"))
                 self.grid[x][y].value = original
 
 
-s = [[0,0,1,0,7,2,0,8,4],
-     [6,4,9,8,0,0,2,5,7],
-     [8,2,0,5,0,9,0,0,3],
-     [0,0,0,2,8,0,1,0,0],
-     [0,0,8,0,9,0,0,4,5],
-     [0,0,0,1,0,7,0,0,2],
-     [9,6,0,0,0,5,0,7,0],
-     [3,0,4,0,0,0,5,6,0],
-     [0,0,0,7,0,3,0,0,9],
-]
+s = [[0, 0, 1, 0, 7, 2, 0, 8, 4],
+     [6, 4, 9, 8, 0, 0, 2, 5, 7],
+     [8, 2, 0, 5, 0, 9, 0, 0, 3],
+     [0, 0, 0, 2, 8, 0, 1, 0, 0],
+     [0, 0, 8, 0, 9, 0, 0, 4, 5],
+     [0, 0, 0, 1, 0, 7, 0, 0, 2],
+     [9, 6, 0, 0, 0, 5, 0, 7, 0],
+     [3, 0, 4, 0, 0, 0, 5, 6, 0],
+     [0, 0, 0, 7, 0, 3, 0, 0, 9],
+     ]
 
 hard1 = [
-    [0,2,0,5,0,8,0,0,0],
-    [9,0,0,0,0,0,8,0,0],
-    [6,0,3,0,0,0,0,2,4],
-    [0,3,2,6,0,0,0,0,0],
-    [0,0,0,0,3,4,0,0,0],
-    [7,0,0,0,1,9,3,0,0],
-    [8,0,0,0,2,0,0,0,0],
-    [0,0,0,0,0,0,9,0,1],
-    [0,0,9,0,0,0,0,7,6],
+    [0, 2, 0, 5, 0, 8, 0, 0, 0],
+    [9, 0, 0, 0, 0, 0, 8, 0, 0],
+    [6, 0, 3, 0, 0, 0, 0, 2, 4],
+    [0, 3, 2, 6, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 3, 4, 0, 0, 0],
+    [7, 0, 0, 0, 1, 9, 3, 0, 0],
+    [8, 0, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 9, 0, 1],
+    [0, 0, 9, 0, 0, 0, 0, 7, 6],
 ]
 
 expert = [
-    [4,0,0,0,1,7,0,0,3],
-    [0,1,0,0,3,0,0,0,4],
-    [0,0,0,0,2,0,0,0,0],
-    [5,0,0,0,0,0,9,0,0],
-    [0,0,9,0,0,0,0,7,5],
-    [0,0,0,4,0,0,0,0,0],
-    [0,8,0,6,0,0,0,0,2],
-    [9,0,0,0,0,0,3,0,0],
-    [0,7,0,2,0,0,5,0,6],
+    [4, 0, 0, 0, 1, 7, 0, 0, 3],
+    [0, 1, 0, 0, 3, 0, 0, 0, 4],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0, 9, 0, 0],
+    [0, 0, 9, 0, 0, 0, 0, 7, 5],
+    [0, 0, 0, 4, 0, 0, 0, 0, 0],
+    [0, 8, 0, 6, 0, 0, 0, 0, 2],
+    [9, 0, 0, 0, 0, 0, 3, 0, 0],
+    [0, 7, 0, 2, 0, 0, 5, 0, 6],
 ]
 
 expert2 = [
-    [0,0,0,0,7,0,0,0,0],
-    [0,1,0,5,0,0,8,0,0],
-    [0,0,0,0,0,1,6,4,9],
-    [0,0,8,1,0,0,0,0,0],
-    [0,0,0,3,0,0,0,0,0],
-    [0,9,0,2,0,4,0,5,3],
-    [0,0,4,0,0,0,1,0,0],
-    [0,7,3,0,0,0,9,0,0],
-    [0,0,0,0,2,0,0,0,0],
+    [0, 0, 0, 0, 7, 0, 0, 0, 0],
+    [0, 1, 0, 5, 0, 0, 8, 0, 0],
+    [0, 0, 0, 0, 0, 1, 6, 4, 9],
+    [0, 0, 8, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0],
+    [0, 9, 0, 2, 0, 4, 0, 5, 3],
+    [0, 0, 4, 0, 0, 0, 1, 0, 0],
+    [0, 7, 3, 0, 0, 0, 9, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0],
 ]
+
 
 def str_to_array(s):
     out = []
     ints = map(int, s)
     for i in range(0, 9):
-        out.append(ints[i*9:i*9+9])
+        out.append(ints[i * 9:i * 9 + 9])
     return out
 
 
 expert3 = str_to_array("000000000801000340006400800004210000000030002100600079000008000600000054900002007")
-test    = str_to_array("0"*81)
+test = str_to_array("0" * 81)
 
 generated = Grid(generate=True)
 generated.exclusive_subgroups()
